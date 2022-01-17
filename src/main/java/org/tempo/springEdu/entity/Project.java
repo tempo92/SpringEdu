@@ -9,7 +9,7 @@ import org.springframework.data.annotation.Id;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class project {
+public class Project {
     @Id
     private String id;
     private String name;

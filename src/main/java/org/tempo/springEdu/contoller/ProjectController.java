@@ -5,19 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.tempo.springEdu.dto.projectDto;
-import org.tempo.springEdu.entity.project;
-import org.tempo.springEdu.repository.projectRepository;
+import org.tempo.springEdu.dto.ProjectDto;
+import org.tempo.springEdu.entity.Project;
+import org.tempo.springEdu.repository.ProjectRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/projects")
-public class projectController {
+public class ProjectController {
 
     @Autowired
-    private projectRepository repository;
+    private ProjectRepository repository;
 
     private final ModelMapper modelMapper = new ModelMapper();
 
@@ -27,19 +27,19 @@ public class projectController {
     }
 
     @PostMapping("")
-    public ResponseEntity create(@RequestBody projectDto aProjectDto) {
-        project aProject = modelMapper.map(aProjectDto, project.class);
+    public ResponseEntity create(@RequestBody ProjectDto aProjectDto) {
+        Project aProject = modelMapper.map(aProjectDto, Project.class);
         repository.save(aProject);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<project>> findAll() {
+    public ResponseEntity<List<Project>> findAll() {
         return ResponseEntity.ok(repository.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<project> findById(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Project> findById(@PathVariable(value = "id") String id) {
         if (repository.findById(id).isEmpty()) {
             return new ResponseEntity(HttpStatus.OK);
         } else {
@@ -49,7 +49,7 @@ public class projectController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable(value = "id") String id) {
-        Optional<project> delProject = repository.findById(id);
+        Optional<Project> delProject = repository.findById(id);
         if (delProject.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
@@ -60,12 +60,12 @@ public class projectController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity update(
-            @PathVariable(value = "id") String id, @RequestBody projectDto projectDto) {
-        Optional<project> optionalProject = repository.findById(id);
+            @PathVariable(value = "id") String id, @RequestBody ProjectDto projectDto) {
+        Optional<Project> optionalProject = repository.findById(id);
         if (optionalProject.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
-            project aProject = modelMapper.map(projectDto, project.class);
+            Project aProject = modelMapper.map(projectDto, Project.class);
             aProject.setId(id);
             repository.save(aProject);
             return new ResponseEntity(HttpStatus.OK);
