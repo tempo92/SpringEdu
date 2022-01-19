@@ -9,6 +9,7 @@ import org.tempo.springEdu.repository.ProjectRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
@@ -30,12 +31,25 @@ public class ProjectService {
     public Optional<Project> findById(String id) {
         return repository.findById(id);
     }
+
+    public Optional<ProjectDto> findByIdDto(String id) {
+        var project = repository.findById(id);
+        return project.map(dto->modelMapper.map(project, ProjectDto.class));
+    }
+
     public List<Project> findAll() {
         return repository.findAll();
+    }
+
+    public List<ProjectDto> findAllDto() {
+        return repository.findAll().stream()
+                .map(project -> modelMapper.map(project, ProjectDto.class))
+                .collect(Collectors.toList());
     }
 
     public void create(ProjectDto aProjectDto) {
         Project aProject = modelMapper.map(aProjectDto, Project.class);
         repository.save(aProject);
     }
+
 }

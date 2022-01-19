@@ -30,15 +30,20 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Project>> findAll() {
+    public ResponseEntity<List<ProjectDto>> findAll() {
+        return ResponseEntity.ok(projectService.findAllDto());
+    }
+
+    @RequestMapping("/full")
+    public ResponseEntity<List<Project>> findAllFull() {
         return ResponseEntity.ok(projectService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Project> findById(@PathVariable(value = "id") String id) {
-        var project = projectService.findById(id);
-        if (project.isPresent()) {
-            return ResponseEntity.ok(project.get());
+    public ResponseEntity<ProjectDto> findById(@PathVariable(value = "id") String id) {
+        var projectDto = projectService.findByIdDto(id);
+        if (projectDto.isPresent()) {
+            return ResponseEntity.ok(projectDto.get());
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
