@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.tempo.springEdu.dto.ProjectDto;
 import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.repository.ProjectRepository;
+import org.tempo.springEdu.service.ProjectService;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +18,7 @@ import java.util.Optional;
 public class ProjectController {
 
     @Autowired
-    private ProjectRepository repository;
-
-    private final ModelMapper modelMapper = new ModelMapper();
+    private ProjectService projectService;
 
     @RequestMapping("/test")
     String home() {
@@ -27,20 +26,19 @@ public class ProjectController {
     }
 
     @PostMapping("")
-    public ResponseEntity create(@RequestBody ProjectDto aProjectDto) {
-        Project aProject = modelMapper.map(aProjectDto, Project.class);
-        repository.save(aProject);
+    public ResponseEntity create(@RequestBody ProjectDto projectDto) {
+        projectService.create(projectDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<Project>> findAll() {
-        return ResponseEntity.ok(repository.findAll());
+        return ResponseEntity.ok(projectService.findAll());
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Project> findById(@PathVariable(value = "id") String id) {
-        var project = repository.findById(id);
+        var project = projectService.findById(id);
         if (project.isPresent()) {
             return ResponseEntity.ok(project.get());
         } else {
@@ -50,11 +48,11 @@ public class ProjectController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable(value = "id") String id) {
-        Optional<Project> delProject = repository.findById(id);
+        Optional<Project> delProject = projectService.findById(id);
         if (delProject.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
-            repository.delete(delProject.get());
+            projectService.delete(delProject.get());
             return new ResponseEntity(HttpStatus.OK);
         }
     }
@@ -62,13 +60,11 @@ public class ProjectController {
     @PutMapping(value = "/{id}")
     public ResponseEntity update(
             @PathVariable(value = "id") String id, @RequestBody ProjectDto projectDto) {
-        Optional<Project> optionalProject = repository.findById(id);
+        Optional<Project> optionalProject = projectService.findById(id);
         if (optionalProject.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
-            Project aProject = modelMapper.map(projectDto, Project.class);
-            aProject.setId(id);
-            repository.save(aProject);
+            projectService.update(id, projectDto);
             return new ResponseEntity(HttpStatus.OK);
         }
     }
