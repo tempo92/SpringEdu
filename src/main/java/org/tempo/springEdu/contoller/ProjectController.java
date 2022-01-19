@@ -40,8 +40,9 @@ public class ProjectController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Project> findById(@PathVariable(value = "id") String id) {
-        if (repository.findById(id).isEmpty()) {
-            return new ResponseEntity(HttpStatus.OK);
+        var project = repository.findById(id);
+        if (project.isPresent()) {
+            return ResponseEntity.ok(project.get());
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
