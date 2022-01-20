@@ -3,12 +3,13 @@ package org.tempo.springEdu.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.tempo.springEdu.dto.ProjectDto;
+import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.repository.ProjectRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
@@ -17,8 +18,8 @@ public class ProjectService {
 
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public void update(String id, ProjectDto projectDto) {
-        Project project = modelMapper.map(projectDto, Project.class);
+    public void update(String id, ProjectUpdateDto dto) {
+        Project project = dtoToEntity(dto);
         project.setId(id);
         repository.save(project);
     }
@@ -30,12 +31,35 @@ public class ProjectService {
     public Optional<Project> findById(String id) {
         return repository.findById(id);
     }
+
+    public Optional<ProjectDto> findByIdDto(String id) {
+        var project = repository.findById(id);
+        return project.map(this::entityToDto);
+    }
+
     public List<Project> findAll() {
         return repository.findAll();
     }
 
-    public void create(ProjectDto aProjectDto) {
-        Project aProject = modelMapper.map(aProjectDto, Project.class);
-        repository.save(aProject);
+    public List<ProjectDto> findAllDto() {
+        return repository.findAll().stream()
+                .map(this::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    public void create(ProjectUpdateDto projectDto) {
+        repository.save(dtoToEntity(projectDto));
+    }
+
+    private ProjectDto entityToDto(Project project) {
+        return modelMapper.map(project, ProjectDto.class);
+    }
+
+    private Project dtoToEntity(ProjectDto dto) {
+        return modelMapper.map(dto, Project.class);
+    }
+
+    private Project dtoToEntity(ProjectUpdateDto dto) {
+        return modelMapper.map(dto, Project.class);
     }
 }

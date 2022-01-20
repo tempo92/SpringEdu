@@ -8,7 +8,6 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class ProjectDto {
-    private String id;
+public class ProjectUpdateDto {
     private String name;
 }

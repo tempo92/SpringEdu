@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.tempo.springEdu.dto.ProjectDto;
+import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.service.ProjectService;
 
@@ -24,21 +24,21 @@ public class ProjectController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody ProjectDto projectDto) {
+    public ResponseEntity<?> create(@RequestBody ProjectUpdateDto projectDto) {
         projectService.create(projectDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Project>> findAll() {
-        return ResponseEntity.ok(projectService.findAll());
+    public ResponseEntity<List<ProjectDto>> findAll() {
+        return ResponseEntity.ok(projectService.findAllDto());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Project> findById(@PathVariable(value = "id") String id) {
-        var project = projectService.findById(id);
-        if (project.isPresent()) {
-            return ResponseEntity.ok(project.get());
+    public ResponseEntity<ProjectDto> findById(@PathVariable(value = "id") String id) {
+        var projectDto = projectService.findByIdDto(id);
+        if (projectDto.isPresent()) {
+            return ResponseEntity.ok(projectDto.get());
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -57,12 +57,12 @@ public class ProjectController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<?> update(
-            @PathVariable(value = "id") String id, @RequestBody ProjectDto projectDto) {
+            @PathVariable(value = "id") String id, @RequestBody ProjectUpdateDto dto) {
         Optional<Project> optionalProject = projectService.findById(id);
         if (optionalProject.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            projectService.update(id, projectDto);
+            projectService.update(id, dto);
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
