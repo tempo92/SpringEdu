@@ -3,7 +3,7 @@ package org.tempo.springEdu.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.tempo.springEdu.dto.ProjectDto;
+import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.repository.ProjectRepository;
 
@@ -18,8 +18,8 @@ public class ProjectService {
 
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public void update(String id, ProjectDto projectDto) {
-        Project project = modelMapper.map(projectDto, Project.class);
+    public void update(String id, ProjectUpdateDto dto) {
+        Project project = dtoToEntity(dto);
         project.setId(id);
         repository.save(project);
     }
@@ -34,7 +34,7 @@ public class ProjectService {
 
     public Optional<ProjectDto> findByIdDto(String id) {
         var project = repository.findById(id);
-        return project.map(dto->modelMapper.map(project, ProjectDto.class));
+        return project.map(this::entityToDto);
     }
 
     public List<Project> findAll() {
@@ -43,13 +43,23 @@ public class ProjectService {
 
     public List<ProjectDto> findAllDto() {
         return repository.findAll().stream()
-                .map(project -> modelMapper.map(project, ProjectDto.class))
+                .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
 
-    public void create(ProjectDto aProjectDto) {
-        Project aProject = modelMapper.map(aProjectDto, Project.class);
-        repository.save(aProject);
+    public void create(ProjectUpdateDto projectDto) {
+        repository.save(dtoToEntity(projectDto));
     }
 
+    private ProjectDto entityToDto(Project project) {
+        return modelMapper.map(project, ProjectDto.class);
+    }
+
+    private Project dtoToEntity(ProjectDto dto) {
+        return modelMapper.map(dto, Project.class);
+    }
+
+    private Project dtoToEntity(ProjectUpdateDto dto) {
+        return modelMapper.map(dto, Project.class);
+    }
 }
