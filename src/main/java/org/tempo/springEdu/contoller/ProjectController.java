@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
-import org.tempo.springEdu.exception.ProjectNotFoundException;
 import org.tempo.springEdu.service.ProjectService;
 
 import java.util.List;
@@ -42,22 +41,16 @@ public class ProjectController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") String id) {
-        Project delProject = projectService.findById(id);
-        projectService.delete(delProject);
+        projectService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<?> update(
             @PathVariable(value = "id") String id, @RequestBody ProjectUpdateDto dto) {
-        Project optionalProject = projectService.findById(id);
-        projectService.update(optionalProject.getId(), dto);
+        projectService.update(id, dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ExceptionHandler({ProjectNotFoundException.class})
-    public ResponseEntity<String> handleProjectNotFoundException(
-            ProjectNotFoundException exception) {
-        return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
+
 }
