@@ -9,7 +9,6 @@ import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.service.ProjectService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -37,33 +36,21 @@ public class ProjectController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProjectDto> findById(@PathVariable(value = "id") String id) {
         var projectDto = projectService.findByIdDto(id);
-        if (projectDto.isPresent()) {
-            return ResponseEntity.ok(projectDto.get());
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(projectDto);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") String id) {
-        Optional<Project> delProject = projectService.findById(id);
-        if (delProject.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            projectService.delete(delProject.get());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        projectService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<?> update(
             @PathVariable(value = "id") String id, @RequestBody ProjectUpdateDto dto) {
-        Optional<Project> optionalProject = projectService.findById(id);
-        if (optionalProject.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            projectService.update(id, dto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        projectService.update(id, dto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }

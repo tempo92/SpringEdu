@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
+import org.tempo.springEdu.exception.ObjectNotFoundException;
 import org.tempo.springEdu.repository.ProjectRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,22 +19,25 @@ public class ProjectService {
     private final ModelMapper modelMapper = new ModelMapper();
 
     public void update(String id, ProjectUpdateDto dto) {
+        Project oldProject = findById(id);
         Project project = dtoToEntity(dto);
-        project.setId(id);
+        project.setId(oldProject.getId());
         repository.save(project);
     }
 
-    public void delete(Project project) {
-        repository.delete(project);
+    public void delete(String id) {
+        Project delProject = findById(id);
+        repository.delete(delProject);
     }
 
-    public Optional<Project> findById(String id) {
-        return repository.findById(id);
+    public Project findById(String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        String.format("Project with id=%s not found", id)));
     }
 
-    public Optional<ProjectDto> findByIdDto(String id) {
-        var project = repository.findById(id);
-        return project.map(this::entityToDto);
+    public ProjectDto findByIdDto(String id) {
+        return entityToDto(findById(id));
     }
 
     public List<Project> findAll() {
