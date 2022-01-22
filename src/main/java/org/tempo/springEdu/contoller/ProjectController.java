@@ -8,6 +8,7 @@ import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.service.ProjectService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class ProjectController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody ProjectUpdateDto projectDto) {
+    public ResponseEntity<?> create(@Valid @RequestBody ProjectUpdateDto projectDto) {
         projectService.create(projectDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -47,10 +48,9 @@ public class ProjectController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<?> update(
-            @PathVariable(value = "id") String id, @RequestBody ProjectUpdateDto dto) {
+            @PathVariable(value = "id") String id, @Valid @RequestBody ProjectUpdateDto dto) {
         projectService.update(id, dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 }
