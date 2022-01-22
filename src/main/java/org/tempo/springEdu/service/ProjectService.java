@@ -45,13 +45,25 @@ public class ProjectService {
     }
 
     public List<ProjectDto> findAllDto() {
-        return repository.findAll().stream()
-                .map(this::entityToDto)
-                .collect(Collectors.toList());
+        return entityListToDtoList(repository.findAll());
+    }
+
+    public List<ProjectDto> findAllDto(String substring) {
+        if (substring != null && !substring.isEmpty()){
+            return entityListToDtoList(repository.findByAreaRegexIgnoreCase(substring));
+        }
+        else {
+            return findAllDto();
+        }
     }
 
     public void create(ProjectUpdateDto projectDto) {
         repository.save(dtoToEntity(projectDto));
+    }
+
+    private List<ProjectDto> entityListToDtoList(List<Project> projects){
+        return projects.stream()
+                .map(this::entityToDto).collect(Collectors.toList());
     }
 
     private ProjectDto entityToDto(Project project) {
