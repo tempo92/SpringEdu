@@ -2,9 +2,13 @@ package org.tempo.springEdu.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
+import org.tempo.springEdu.exception.ArgumentException;
 import org.tempo.springEdu.exception.ObjectNotFoundException;
 import org.tempo.springEdu.repository.ProjectRepository;
 
@@ -48,20 +52,43 @@ public class ProjectService {
         return entityListToDtoList(repository.findAll());
     }
 
-    public List<ProjectDto> findAllDto(String substring) {
-        if (substring != null && !substring.isEmpty()){
-            return entityListToDtoList(repository.findByAreaRegexIgnoreCase(substring));
+    public List<ProjectDto> findAllDto(
+            String substring, Integer pageNumber, Integer pageSize) {
+
+        if (pageNumber < 0 ^ pageSize == 0) {
+            throw new ArgumentException("Parameters 'pageNumber' and 'pageSize' should be set both");
         }
-        else {
-            return findAllDto();
+
+        if (substring != null && !substring.isEmpty()) {
+            if (pageNumber >= 0 && pageSize > 0) {
+                var projects = repository.findByNameContainsIgnoreCase(substring,
+                        PageRequest.of(pageNumber, pageSize));
+                return entityListToDtoList(projects);
+            }
+            else {
+                return entityListToDtoList(repository.findByNameContainsIgnoreCase(substring));
+            }
+        } else {
+            if (pageNumber >= 0 && pageSize > 0) {
+                var projects = repository.findAll(
+                        PageRequest.of(pageNumber, pageSize));
+                return entityListToDtoList(projects);
+            }
+            else {
+                return findAllDto();
+            }
         }
     }
 
     public void create(ProjectUpdateDto projectDto) {
         repository.save(dtoToEntity(projectDto));
     }
+    private List<ProjectDto> entityListToDtoList(Page<Project> projects) {
+        return projects.stream()
+                .map(this::entityToDto).collect(Collectors.toList());
+    }
 
-    private List<ProjectDto> entityListToDtoList(List<Project> projects){
+    private List<ProjectDto> entityListToDtoList(List<Project> projects) {
         return projects.stream()
                 .map(this::entityToDto).collect(Collectors.toList());
     }

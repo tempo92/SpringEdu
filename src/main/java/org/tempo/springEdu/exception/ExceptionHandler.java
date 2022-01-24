@@ -12,4 +12,10 @@ public class ExceptionHandler {
             ObjectNotFoundException exception) {
         return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler({ArgumentException.class})
+    public ResponseEntity<String> handleArgumentException(
+            ArgumentException exception) {
+        return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

@@ -30,8 +30,14 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<List<ProjectDto>> findAll(
-            @RequestParam(value = "filterProjectName", required = false) String nameFilter) {
-        return ResponseEntity.ok(projectService.findAllDto(nameFilter));
+            @RequestParam(value = "filterProjectName", required = false) String nameFilter
+            ,@RequestParam(value = "pageNumber",
+                required = true, defaultValue = "-1") Integer pageNumber
+            ,@RequestParam(value = "pageSize",
+                required = true, defaultValue = "0") Integer pageSize) {
+
+        return ResponseEntity.ok(
+            projectService.findAllDto(nameFilter, pageNumber, pageSize));
     }
 
     @GetMapping(value = "/{id}")
