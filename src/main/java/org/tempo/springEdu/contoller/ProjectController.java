@@ -10,6 +10,7 @@ import org.tempo.springEdu.service.ProjectService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -32,10 +33,10 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<List<ProjectDto>> findAll(
             @RequestParam(value = "filterProjectName", required = false) String nameFilter
-            ,@RequestParam(value = "pageNumber",
-                required = true, defaultValue = "-1") Integer pageNumber
-            ,@RequestParam(value = "pageSize",
-                required = true, defaultValue = "0") Integer pageSize) {
+            , @RequestParam(value = "pageNumber",
+                required = false) Integer pageNumber
+            , @RequestParam(value = "pageSize",
+                required = false) Integer pageSize) {
 
         return ResponseEntity.ok(
             projectService.findAllDto(nameFilter, pageNumber, pageSize));

@@ -3,8 +3,6 @@ package org.tempo.springEdu.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
@@ -53,31 +51,12 @@ public class ProjectService {
     }
 
     public List<ProjectDto> findAllDto(
-            String substring, Integer pageNumber, Integer pageSize) {
+            String namePart, Integer pageNumber, Integer pageSize) {
 
-        if (pageNumber < 0 ^ pageSize == 0) {
+        if (pageNumber == null ^ pageSize == null) {
             throw new ArgumentException("Parameters 'pageNumber' and 'pageSize' should be set both");
         }
-
-        if (substring != null && !substring.isEmpty()) {
-            if (pageNumber >= 0 && pageSize > 0) {
-                var projects = repository.findByNameContainsIgnoreCase(substring,
-                        PageRequest.of(pageNumber, pageSize));
-                return entityListToDtoList(projects);
-            }
-            else {
-                return entityListToDtoList(repository.findByNameContainsIgnoreCase(substring));
-            }
-        } else {
-            if (pageNumber >= 0 && pageSize > 0) {
-                var projects = repository.findAll(
-                        PageRequest.of(pageNumber, pageSize));
-                return entityListToDtoList(projects);
-            }
-            else {
-                return findAllDto();
-            }
-        }
+        return entityListToDtoList(repository.findAll(namePart, pageNumber, pageSize));
     }
 
     public void create(ProjectUpdateDto projectDto) {
