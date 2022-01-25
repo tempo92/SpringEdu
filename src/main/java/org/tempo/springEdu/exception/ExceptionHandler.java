@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import javax.validation.ValidationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +21,12 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler({ArgumentException.class})
     public ResponseEntity<String> handleArgumentException(
             ArgumentException exception) {
+        return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler({ValidationException.class})
+    public ResponseEntity<String> handleValidationException(
+            ValidationException exception) {
         return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

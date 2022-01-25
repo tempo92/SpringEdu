@@ -3,12 +3,15 @@ package org.tempo.springEdu.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.exception.ArgumentException;
 import org.tempo.springEdu.exception.ObjectNotFoundException;
 import org.tempo.springEdu.repository.ProjectRepository;
+import org.tempo.springEdu.repository.SortHelper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,12 +54,19 @@ public class ProjectService {
     }
 
     public List<ProjectDto> findAllDto(
-            String namePart, Integer pageNumber, Integer pageSize) {
+            String namePart, Integer pageNumber, Integer pageSize, List<String> sortList) {
 
         if (pageNumber == null ^ pageSize == null) {
             throw new ArgumentException("Parameters 'pageNumber' and 'pageSize' should be set both");
         }
-        return entityListToDtoList(repository.findAll(namePart, pageNumber, pageSize));
+
+        Pageable pageable = null;
+        if (pageNumber != null && pageSize != null) {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+
+        return entityListToDtoList(
+                repository.findByName(namePart, pageable , SortHelper.createSort(sortList)));
     }
 
     public void create(ProjectUpdateDto projectDto) {
