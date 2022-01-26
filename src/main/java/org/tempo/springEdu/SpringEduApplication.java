@@ -7,8 +7,9 @@ import org.springframework.context.annotation.PropertySources;
 
 @SpringBootApplication
 @PropertySources({
-    @PropertySource("classpath:application.properties"),
-    @PropertySource(value = "classpath:application.local.properties", ignoreResourceNotFound = true)
+        @PropertySource("classpath:app.properties")
+        ,@PropertySource(value = "classpath:app.local.properties",
+                ignoreResourceNotFound = true)
 })
 public class SpringEduApplication {
 

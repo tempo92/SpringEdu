@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### SpringEdu ###
-application.local.properties
+app.local.properties
