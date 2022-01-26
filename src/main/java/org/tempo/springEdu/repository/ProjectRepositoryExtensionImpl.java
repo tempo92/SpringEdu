@@ -1,6 +1,7 @@
 package org.tempo.springEdu.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -16,7 +17,10 @@ public class ProjectRepositoryExtensionImpl implements ProjectRepositoryExtensio
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public List<Project> findByName(String namePart, Pageable pageable, Sort sort) {
+    public List<Project> findByName(
+            @Nullable String namePart,
+            @Nullable Pageable pageable,
+            @Nullable Sort sort) {
 
         Query query = new Query();
         if (namePart != null && !namePart.isEmpty()) {

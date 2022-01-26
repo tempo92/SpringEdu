@@ -1,5 +1,6 @@
 package org.tempo.springEdu.service;
 
+import org.jetbrains.annotations.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,8 @@ public class ProjectService {
     }
 
     public List<ProjectDto> findAllDto(
-            String namePart, Integer pageNumber, Integer pageSize, List<String> sortList) {
+            @Nullable String namePart, @Nullable Integer pageNumber,
+            @Nullable Integer pageSize, @Nullable List<String> sortList) {
 
         if (pageNumber == null ^ pageSize == null) {
             throw new ArgumentException("Parameters 'pageNumber' and 'pageSize' should be set both");
