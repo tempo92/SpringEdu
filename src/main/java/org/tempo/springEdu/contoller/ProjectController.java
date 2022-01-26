@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.tempo.springEdu.dto.*;
-import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.service.ProjectService;
 
 import javax.validation.Valid;
@@ -31,8 +30,13 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<List<ProjectDto>> findAll(
-            @RequestParam(value = "filterProjectName", required = false) String nameFilter) {
-        return ResponseEntity.ok(projectService.findAllDto(nameFilter));
+            @RequestParam(value = "filterProjectName", required = false) String nameFilter
+            , @RequestParam(value = "pageNumber", required = false) Integer pageNumber
+            , @RequestParam(value = "pageSize", required = false) Integer pageSize
+            , @RequestParam(value = "sort", required = false) List<String> sortInfo) {
+
+        return ResponseEntity.ok(
+                projectService.findAllDto(nameFilter, pageNumber, pageSize, sortInfo));
     }
 
     @GetMapping(value = "/{id}")
