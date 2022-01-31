@@ -13,4 +13,12 @@ public class Project {
     @Id
     private String id;
     private String name;
+    private String ownerId;
+
+    public void setOwnerId(String ownerId) {
+        if (this.ownerId != null) {
+            throw new RuntimeException("ownerId cannot be changed");
+        }
+        this.ownerId = ownerId;
+    }
 }

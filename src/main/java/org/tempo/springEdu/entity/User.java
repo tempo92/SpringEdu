@@ -1,6 +1,7 @@
 package org.tempo.springEdu.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
@@ -8,6 +9,8 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class User implements UserDetails {
+    @Id
+    private String id;
     private String username;
     private String password;
     private Set<Role> authorities;

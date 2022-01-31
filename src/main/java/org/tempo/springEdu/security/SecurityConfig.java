@@ -35,14 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         if (userRepository.findByUsername("user").isEmpty()){
-            var user = new User("user",
+            var user = new User(null,"user",
                     passwordEncoder().encode("user"),
                     Set.of(new Role(RoleName.USER))
             );
             userRepository.save(user);
         }
         if (userRepository.findByUsername("admin").isEmpty()){
-            var user = new User("admin",
+            var user = new User(null,"admin",
                     passwordEncoder().encode("admin"),
                     Set.of(new Role(RoleName.ADMIN))
             );
