@@ -12,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.tempo.springEdu.SpringEduApplication;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 @Component
 @Aspect
@@ -54,6 +55,13 @@ public class CustomLogger {
                 ,userName
                 ,stopWatch.getTotalTimeMillis()
         ));
+
+        Enumeration<String> headerNames = request.getHeaderNames();
+        if (headerNames != null) {
+            while (headerNames.hasMoreElements()) {
+                logger.info("Header: " + request.getHeader(headerNames.nextElement()));
+            }
+        }
         return result;
     }
 }
