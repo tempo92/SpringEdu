@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.tempo.springEdu.entity.Role;
@@ -24,32 +25,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public UserDetailsService customUserDetailsService() {
+        return new CustomUserDetailsService();
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        if (userRepository.findByUsername("user").isEmpty()){
-            var user = new User(null,"user",
-                    passwordEncoder().encode("user"),
-                    Set.of(new Role(RoleName.USER))
-            );
-            userRepository.save(user);
-        }
-        if (userRepository.findByUsername("admin").isEmpty()){
-            var user = new User(null,"admin",
-                    passwordEncoder().encode("admin"),
-                    Set.of(new Role(RoleName.ADMIN))
-            );
-            userRepository.save(user);
-        }
-
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(customUserDetailsService());
     }
 
     @Override
