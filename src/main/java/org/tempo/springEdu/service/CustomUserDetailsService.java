@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tempo.springEdu.repository.UserRepository;
 
-@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired

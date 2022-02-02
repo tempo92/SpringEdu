@@ -43,25 +43,32 @@ public class CustomLogger {
         String clientIp = request.getRemoteAddr();
         String userName = request.getRemoteUser();
 
+        Enumeration<String> headerNames = request.getHeaderNames();
+        StringBuilder sbHeader = new StringBuilder();
+        if (headerNames != null) {
+            while (headerNames.hasMoreElements()) {
+                sbHeader.append(" ");
+                sbHeader.append(request.getHeader(headerNames.nextElement()));
+                sbHeader.append(";");
+            }
+        }
+
         logger.info(String.format(
                 "\nMethod: %s\n"
                         + "Request URI: %s\n"
                         + "Client address: %s\n"
                         + "Username: %s\n"
-                        + "Processing time: %s ms"
+                        + "Processing time: %s ms\n"
+                        + "Header:%s"
                 ,httpMethod
                 ,requestUri
                 ,clientIp
                 ,userName
                 ,stopWatch.getTotalTimeMillis()
+                ,sbHeader.toString()
         ));
 
-        Enumeration<String> headerNames = request.getHeaderNames();
-        if (headerNames != null) {
-            while (headerNames.hasMoreElements()) {
-                logger.info("Header: " + request.getHeader(headerNames.nextElement()));
-            }
-        }
+
         return result;
     }
 }
