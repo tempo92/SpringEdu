@@ -4,6 +4,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.tempo.springEdu.entity.Project;
 
@@ -15,5 +16,8 @@ public interface ProjectRepository
 
     List<Project> findByNameContainsIgnoreCase(String substring);
     List<Project> findByNameContainsIgnoreCase(String substring, Pageable pageable);
+
+    //@Query(value="{'ownerId' : $0}", delete = true)
+    void deleteByOwnerId (String ownerId);
 
 }

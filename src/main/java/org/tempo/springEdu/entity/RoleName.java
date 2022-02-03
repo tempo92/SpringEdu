@@ -1,6 +1,11 @@
 package org.tempo.springEdu.entity;
 
 public enum RoleName {
-    ROLE_USER
-    , ROLE_ADMIN;
+    USER
+    , ADMIN;
+
+    public String longName()
+    {
+        return "ROLE_" + name();
+    }
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails {
     @Id
     private String id;

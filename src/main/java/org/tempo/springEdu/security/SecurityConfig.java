@@ -53,10 +53,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/**").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/projects/**").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/projects/**").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/projects/api/**").authenticated()
+
+                .antMatchers(HttpMethod.GET, "/api/users/**")
+                .hasRole(RoleName.ADMIN.name())
+
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().cors().and().csrf().disable();
