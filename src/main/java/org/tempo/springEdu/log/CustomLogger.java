@@ -12,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.tempo.springEdu.SpringEduApplication;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 @Component
 @Aspect
@@ -42,18 +43,32 @@ public class CustomLogger {
         String clientIp = request.getRemoteAddr();
         String userName = request.getRemoteUser();
 
+        Enumeration<String> headerNames = request.getHeaderNames();
+        StringBuilder sbHeader = new StringBuilder();
+        if (headerNames != null) {
+            while (headerNames.hasMoreElements()) {
+                sbHeader.append(" ");
+                sbHeader.append(request.getHeader(headerNames.nextElement()));
+                sbHeader.append(";");
+            }
+        }
+
         logger.info(String.format(
                 "\nMethod: %s\n"
                         + "Request URI: %s\n"
                         + "Client address: %s\n"
                         + "Username: %s\n"
-                        + "Processing time: %s ms"
+                        + "Processing time: %s ms\n"
+                        + "Header:%s"
                 ,httpMethod
                 ,requestUri
                 ,clientIp
                 ,userName
                 ,stopWatch.getTotalTimeMillis()
+                ,sbHeader.toString()
         ));
+
+
         return result;
     }
 }
