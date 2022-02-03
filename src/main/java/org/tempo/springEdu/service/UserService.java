@@ -22,13 +22,14 @@ public class UserService {
 
     @PostConstruct
     private void postConstruct() {
-        createDefaultUserIfNeed("user", "user", RoleName.USER);
-        createDefaultUserIfNeed("admin", "admin", RoleName.ADMIN);
+        createDefaultUserIfNeed("user", "user", RoleName.ROLE_USER);
+        createDefaultUserIfNeed("admin", "admin", RoleName.ROLE_ADMIN);
     }
 
     private void createDefaultUserIfNeed(String username, String password, RoleName roleName){
         if (userRepository.findByUsername(username).isEmpty()){
-            var user = new User(username,
+            var user = new User(null,
+                    username,
                     passwordEncoder.encode(password),
                     Set.of(new Role(roleName))
             );

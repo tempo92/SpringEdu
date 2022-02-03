@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
@@ -28,26 +25,17 @@ public class ProjectService {
 
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public void update(String id, ProjectUpdateDto dto) {
+    public void update(String id, ProjectUpdateDto dto, User user) {
         Project oldProject = findById(id);
-        if (getUserId().equals(oldProject.getOwnerId())) {
-            Project project = dtoToEntity(dto);
-            project.setId(oldProject.getId());
-            project.setOwnerId(getUserId());
-            repository.save(project);
-        }
-        else {
-            throw new AccessDeniedException("Owner only");
-        }
+        Project project = dtoToEntity(dto);
+        project.setId(oldProject.getId());
+        project.setOwnerId(user.getId());
+        repository.save(project);
     }
 
-    public void delete(String id) {
+    public void delete(String id, User user) {
         Project delProject = findById(id);
-        if (getUserId().equals(delProject.getOwnerId())) {
-            repository.delete(delProject);
-        } else {
-            throw new AccessDeniedException("Owner only");
-        }
+        repository.delete(delProject);
     }
 
     public Project findById(String id) {
@@ -85,9 +73,9 @@ public class ProjectService {
                 repository.findByName(namePart, pageable, SortHelper.createSort(sortList)));
     }
 
-    public void create(ProjectUpdateDto projectDto) {
+    public void create(ProjectUpdateDto projectDto, User user) {
         var project = dtoToEntity(projectDto);
-        project.setOwnerId(getUserId());
+        project.setOwnerId(user.getId());
         repository.save(project);
     }
 
@@ -113,8 +101,4 @@ public class ProjectService {
         return modelMapper.map(dto, Project.class);
     }
 
-    private String getUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ((User) authentication.getPrincipal()).getId();
-    }
 }
