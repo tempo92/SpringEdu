@@ -53,8 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .httpBasic()
-                .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/projects/**").authenticated()
