@@ -2,6 +2,7 @@ package org.tempo.springEdu.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -40,5 +41,11 @@ public class ExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<String> handleBadCredentialsException(
+            BadCredentialsException exception) {
+        return new ResponseEntity(exception.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }
