@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.tempo.springEdu.dto.*;
 import org.tempo.springEdu.entity.Project;
+import org.tempo.springEdu.entity.User;
 import org.tempo.springEdu.exception.ArgumentException;
 import org.tempo.springEdu.exception.ObjectNotFoundException;
 import org.tempo.springEdu.repository.ProjectRepository;
@@ -24,14 +25,15 @@ public class ProjectService {
 
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public void update(String id, ProjectUpdateDto dto) {
+    public void update(String id, ProjectUpdateDto dto, User user) {
         Project oldProject = findById(id);
         Project project = dtoToEntity(dto);
         project.setId(oldProject.getId());
+        project.setOwnerId(user.getId());
         repository.save(project);
     }
 
-    public void delete(String id) {
+    public void delete(String id, User user) {
         Project delProject = findById(id);
         repository.delete(delProject);
     }
@@ -68,12 +70,15 @@ public class ProjectService {
         }
 
         return entityListToDtoList(
-                repository.findByName(namePart, pageable , SortHelper.createSort(sortList)));
+                repository.findByName(namePart, pageable, SortHelper.createSort(sortList)));
     }
 
-    public void create(ProjectUpdateDto projectDto) {
-        repository.save(dtoToEntity(projectDto));
+    public void create(ProjectUpdateDto projectDto, User user) {
+        var project = dtoToEntity(projectDto);
+        project.setOwnerId(user.getId());
+        repository.save(project);
     }
+
     private List<ProjectDto> entityListToDtoList(Page<Project> projects) {
         return projects.stream()
                 .map(this::entityToDto).collect(Collectors.toList());
@@ -95,4 +100,5 @@ public class ProjectService {
     private Project dtoToEntity(ProjectUpdateDto dto) {
         return modelMapper.map(dto, Project.class);
     }
+
 }
