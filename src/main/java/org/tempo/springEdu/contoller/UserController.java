@@ -3,15 +3,11 @@ package org.tempo.springEdu.contoller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.tempo.springEdu.dto.ProjectDto;
-import org.tempo.springEdu.dto.ProjectUpdateDto;
 import org.tempo.springEdu.dto.UserDto;
 import org.tempo.springEdu.dto.UserUpdateDto;
 import org.tempo.springEdu.entity.User;
-import org.tempo.springEdu.service.ProjectService;
 import org.tempo.springEdu.service.UserService;
 
 import javax.validation.Valid;
@@ -38,14 +34,14 @@ public class UserController {
     public ResponseEntity<?> create(
             @Valid @RequestBody UserUpdateDto userUpdateDto,
             @AuthenticationPrincipal User user) {
-        userService.create(userUpdateDto, user);
+        userService.create(userUpdateDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(
             @PathVariable(value = "id") String id, @AuthenticationPrincipal User user) {
-        userService.delete(id, user);
+        userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -53,7 +49,7 @@ public class UserController {
     public ResponseEntity<?> update(
             @PathVariable(value = "id") String id, @Valid @RequestBody UserUpdateDto dto,
             @AuthenticationPrincipal User user) {
-        userService.update(id, dto, user);
+        userService.update(id, dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
