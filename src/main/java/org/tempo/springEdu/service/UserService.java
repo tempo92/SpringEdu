@@ -5,15 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.tempo.springEdu.dto.ProjectUpdateDto;
 import org.tempo.springEdu.dto.UserDto;
 import org.tempo.springEdu.dto.UserUpdateDto;
-import org.tempo.springEdu.entity.Project;
 import org.tempo.springEdu.entity.Role;
 import org.tempo.springEdu.entity.RoleName;
 import org.tempo.springEdu.entity.User;
 import org.tempo.springEdu.exception.ObjectNotFoundException;
-import org.tempo.springEdu.repository.ProjectRepository;
 import org.tempo.springEdu.repository.UserRepository;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +25,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private ProjectRepository projectRepository;
+    private ProjectService projectService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -46,16 +43,16 @@ public class UserService {
                 userRepository.findAll());
     }
 
-    public void create(UserUpdateDto userUpdateDto, User user) {
+    public void create(UserUpdateDto userUpdateDto) {
         var newUser = dtoToEntity(userUpdateDto);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(newUser);
     }
 
     @Transactional
-    public void delete(String id, User user) {
+    public void delete(String id) {
         User delUser = findById(id);
-        projectRepository.deleteByOwnerId(delUser.getId());
+        projectService.deleteByOwnerId(delUser.getId());
         userRepository.delete(delUser);
     }
 
@@ -65,7 +62,7 @@ public class UserService {
                         String.format("User with id=%s not found", id)));
     }
 
-    public void update(String id, UserUpdateDto dto, User user) {
+    public void update(String id, UserUpdateDto dto) {
         User oldUser = findById(id);
         User newUser = dtoToEntity(dto);
         newUser.setId(oldUser.getId());
