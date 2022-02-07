@@ -14,6 +14,6 @@ public class Role implements GrantedAuthority {
     }
 
     public Role(RoleName roleName) {
-        authority = roleName.toString();
+        authority = roleName.longName();
     }
 }

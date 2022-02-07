@@ -38,6 +38,12 @@ public class ProjectService {
         repository.delete(delProject);
     }
 
+    public void deleteByOwnerId(String ownerId) {
+        repository.deleteByOwnerId(ownerId);
+    }
+
+
+
     public Project findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(
