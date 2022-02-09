@@ -108,6 +108,13 @@ public class FileManagerService {
                 .entityListToDtoList(fileDescriptions);
     }
 
+    public List<FileDescriptionDto> findDto(String filenamePart, String dir) {
+        List<FileDescription> fileDescriptions =
+                fileDescriptionRepository.find(filenamePart, dir);
+        return new Converter(FileDescription.class, FileDescriptionDto.class)
+                .entityListToDtoList(fileDescriptions);
+    }
+
     public void uploadFile(String link, String fileName) throws IOException {
         try (InputStream inputStream = new URL(link).openStream()) {
             Files.copy(inputStream, buildFilePath(fileName));

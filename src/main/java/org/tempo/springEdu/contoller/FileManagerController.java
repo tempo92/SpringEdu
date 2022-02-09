@@ -40,8 +40,8 @@ public class FileManagerController {
     @GetMapping("/upload-file")
     public ResponseEntity<?> uploadFile (
             @RequestParam("link") String link,
-            @RequestParam("fileName") String fileName) throws IOException {
-        fileManagerService.uploadFile(link, fileName);
+            @RequestParam("filename") String filename) throws IOException {
+        fileManagerService.uploadFile(link, filename);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -49,6 +49,13 @@ public class FileManagerController {
     public ResponseEntity<?> findAll (
             @RequestParam(value = "dir", required = false, defaultValue = "") String dir) {
         return ResponseEntity.ok(fileManagerService.findAllDto(dir));
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<?> find (
+            @RequestParam("filenamePart") String filenamePart,
+            @RequestParam(value = "dir", required = false, defaultValue = "") String dir) {
+        return ResponseEntity.ok(fileManagerService.findDto(filenamePart, dir));
     }
 
     @DeleteMapping("/{id}")

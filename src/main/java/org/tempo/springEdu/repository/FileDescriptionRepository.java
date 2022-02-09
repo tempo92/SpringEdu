@@ -5,7 +5,8 @@ import org.tempo.springEdu.entity.FileDescription;
 
 import java.util.List;
 
-public interface FileDescriptionRepository extends MongoRepository<FileDescription, String> {
+public interface FileDescriptionRepository
+        extends MongoRepository<FileDescription, String>, FileDescriptionRepositoryExtension {
 
     List<FileDescription> findByDirectory(String directory);
 }
