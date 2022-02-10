@@ -18,6 +18,7 @@ import org.tempo.springEdu.service.FileManagerService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/file-manager")
@@ -40,7 +41,7 @@ public class FileManagerController {
     @GetMapping("/upload-file")
     public ResponseEntity<?> uploadFile (
             @RequestParam("link") String link,
-            @RequestParam("filename") String filename) throws IOException {
+            @RequestParam("filename") String filename) throws IOException, ExecutionException, InterruptedException {
         fileManagerService.uploadFile(link, filename);
         return new ResponseEntity<>(HttpStatus.OK);
     }

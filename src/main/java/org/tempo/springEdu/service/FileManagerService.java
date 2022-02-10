@@ -1,14 +1,18 @@
 package org.tempo.springEdu.service;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.tempo.springEdu.common.Converter;
 import org.tempo.springEdu.dto.FileDescriptionDto;
 import org.tempo.springEdu.entity.FileDescription;
+import org.tempo.springEdu.exception.CustomException;
 import org.tempo.springEdu.exception.CustomSecurityException;
 import org.tempo.springEdu.exception.ObjectNotFoundException;
 import org.tempo.springEdu.repository.FileDescriptionRepository;
@@ -21,6 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -115,11 +121,20 @@ public class FileManagerService {
                 .entityListToDtoList(fileDescriptions);
     }
 
-    public void uploadFile(String link, String fileName) throws IOException {
-        try (InputStream inputStream = new URL(link).openStream()) {
-            Files.copy(inputStream, buildFilePath(fileName));
-            create(buildFilePath(fileName));
-        }
+    @Transactional
+    public void uploadFile(String link, String fileName)
+            throws IOException, ExecutionException, InterruptedException {
+        Runnable task = () -> {
+            try (InputStream inputStream = new URL(link).openStream()) {
+                Files.copy(inputStream, buildFilePath(fileName));
+            } catch (IOException ex) {
+                throw new CustomException("Upload problem", ex);
+            }
+        };
+        var runner = CompletableFuture.runAsync(task);
+        runner.get();
+        create(buildFilePath(fileName));
+
     }
 
     private void create(Path filePath) throws IOException {

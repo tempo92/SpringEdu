@@ -60,6 +60,12 @@ public class CustomExceptionHandler {
     @ExceptionHandler({IOException.class})
     public ResponseEntity<String> handleIOException(
             IOException exception) {
-        return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(exception.getClass().getName(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({CustomException.class})
+    public ResponseEntity<String> handleCustomException(
+            CustomException exception) {
+        return new ResponseEntity(exception.getClass().getName(), HttpStatus.BAD_REQUEST);
     }
 }
